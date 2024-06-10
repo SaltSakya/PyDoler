@@ -1,4 +1,4 @@
-# PyDoler ![Static Badge](https://img.shields.io/badge/version-0.1%20beta-orange)
+# PyDoler ![Static Badge](https://img.shields.io/badge/version-0.2--beta-orange)
 ![Static Badge](https://img.shields.io/badge/license-MIT-green)
 ![Static Badge](https://img.shields.io/badge/Python-3.10.6-blue)
 ![Static Badge](https://img.shields.io/badge/requests-2.31.0-red)
@@ -58,4 +58,9 @@ def __init__(self, url, stream=True, **kwargs):
             self.url = "other_url"
         else:
             raise InvalidUrlError(self.url)
+```
+* `postprocess(self)`：在此处可以重写后处理相关功能。例如，你可以在下载完成后将全部文件压缩成压缩包。
+``` python
+def postprocess(self):
+    zip_dir(os.path.join(self.download_dir, self.dirname))
 ```

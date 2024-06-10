@@ -121,6 +121,8 @@ class Agent(ABC):
             if self.state == AgentState.FILLED and len(self.url_list) == 0 and self.cur_threads == 0:
                 break
 
+        self.postprocess()
+
     @abstractmethod
     def fill_list(self):
         '''### 填充任务 url 列表
@@ -134,26 +136,7 @@ class Agent(ABC):
         self.cur_threads -= 1
         self.lock.release()
 
-class TestAgent(Agent):
-    def __init__(self, url):
-        super().__init__(url)
-
-    def preprocess(self):
-        self.dirname = "test"
-
-    def fill_list(self):
-        for i in range(10):
-            time.sleep(1)
-            url = f"https://www.url.com/{i}"
-            print(f"添加url: {url}")
-            self.lock.acquire()
-            self.url_list.append(url)
-            self.lock.release()
-
-
-
-def dummydownloader(url, onfinish):
-    time.sleep(5)
-    print(f"下载完成: {url}")
-    onfinish()
-    pass
+    def postprocess(self):
+        '''### 后期处理
+        在此处进行后期处理操作。'''
+        pass
