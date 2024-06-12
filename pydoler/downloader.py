@@ -8,8 +8,11 @@ def get_name_type(r: Response):
     获取文件名和文件类型
     :param r: 请求响应
     :return: 文件名, 文件类型'''
-    filename = r.history[0].url.split('/')[-1].split('?')[0].split('.')[0]
-    filetype = re.search(r'^[a-zA-Z]*?/([^;]+);?(.*?)$', "image/png; end=1").group(1)
+    if r.history:
+        filename = r.history[0].url.split('/')[-1].split('?')[0].split('.')[0]
+    else:
+        filename = r.url.split('/')[-1].split('?')[0].split('.')[0]
+    filetype = re.search(r'^[a-zA-Z]*?/([^;]+);?(.*?)$', r.headers["Content-Type"]).group(1)
     return filename, filetype
 
 def download(url:str, path:str, filename:str=None, headers=None, params=None, cookies=None, stream=False, retrys=0, onfinish=None):
@@ -36,8 +39,8 @@ def download(url:str, path:str, filename:str=None, headers=None, params=None, co
 
             if filename is None:
                 filename = f"{n}.{t}"
-            elif len(filename.split('.')) > 0 and filename.split('.')[-1] not in ['jpg', 'png', 'gif', 'jpeg', 'webp']:
-                filename += f".{t}"
+            elif len(filename.split('.')) > 0 and filename.split('.')[-1] != t:
+                filename = ".".join(filename.split('.')[:-1] + [t])
 
             with open(os.path.join(path, filename), 'wb') as f:
                 if stream:
@@ -48,7 +51,7 @@ def download(url:str, path:str, filename:str=None, headers=None, params=None, co
                     f.write(response.content)
             break
         except Exception as e:
-            print(f"下载文件失败，错误信息：{e}")
+            print(f"下载文件失败，错误信息：{e}, {e.__traceback__}")
     
     print(f">>> {url} 下载完成！")
     onfinish()
