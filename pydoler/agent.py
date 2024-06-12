@@ -39,7 +39,7 @@ class Agent(ABC):
         self.cur_threads:int = 0
 
         self.lock:Lock = Lock()
-        self.url_list:List[str] = list()
+        self.url_list:List[Tuple[str, str]] = list()
 
     def download(self):
         Thread(target=self.download_thread).start()
@@ -102,14 +102,14 @@ class Agent(ABC):
             if self.cur_threads < self.max_threads and len(self.url_list):
                 # 获取 url
                 self.lock.acquire()
-                url = self.url_list.pop(0)
+                filename, url = self.url_list.pop(0)
                 self.cur_threads += 1 # 增加当前线程数
                 self.lock.release()
 
                 # 下载 url 内容
                 Thread(
                     target=download,
-                    args=(url, os.path.join(self.download_dir, self.dirname)),
+                    args=(url, os.path.join(self.download_dir, self.dirname), filename),
                     kwargs={
                         "headers": self.headers,
                         "cookies": self.cookies,
