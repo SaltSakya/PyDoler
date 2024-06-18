@@ -37,7 +37,7 @@ def download(url:str, path:str, filename:str=None, headers=None, params=None, co
 
             n, t = get_name_type(response)
 
-            if filename is None:
+            if filename is None or filename == "":
                 filename = f"{n}.{t}"
             elif len(filename.split('.')) > 0 and filename.split('.')[-1] != t:
                 filename = ".".join(filename.split('.')[:-1] + [t])
