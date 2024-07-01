@@ -9,10 +9,16 @@ def get_name_type(r: Response):
     :param r: 请求响应
     :return: 文件名, 文件类型'''
     if r.history:
-        filename = r.history[0].url.split('/')[-1].split('?')[0].split('.')[0]
+        filename_in_url = r.history[0].url.split('/')[-1].split('?')[0]
     else:
-        filename = r.url.split('/')[-1].split('?')[0].split('.')[0]
+        filename_in_url = r.url.split('/')[-1].split('?')[0]
+    
+    filename = filename_in_url.split('.')[0]
+    filetype_in_url = filename_in_url.split('.')[-1]
+
     filetype = re.search(r'^[a-zA-Z]*?/([^;]+);?(.*?)$', r.headers["Content-Type"]).group(1)
+    if filetype == "jpeg" and filetype_in_url == "jpg":
+        filetype = "jpg"
     return filename, filetype
 
 def download(url:str, path:str, filename:str=None, headers=None, params=None, cookies=None, stream=False, retrys=0, onfinish=None):

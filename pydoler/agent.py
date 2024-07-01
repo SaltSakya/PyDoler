@@ -42,7 +42,8 @@ class Agent(ABC):
         self.url_list:List[Tuple[str, str]] = list()
 
     def download(self):
-        Thread(target=self.download_thread).start()
+        self.main_thread = Thread(target=self.download_thread)
+        self.main_thread.start()
 
     def download_thread(self):
         '''### 下载线程'''
@@ -140,3 +141,6 @@ class Agent(ABC):
         '''### 后期处理
         在此处进行后期处理操作。'''
         pass
+
+    def wait(self):
+        self.main_thread.join()
