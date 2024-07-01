@@ -1,4 +1,4 @@
-# PyDoler ![Static Badge](https://img.shields.io/badge/version-0.2--beta-orange)
+# PyDoler ![Static Badge](https://img.shields.io/badge/version-0.4--beta-orange)
 ![Static Badge](https://img.shields.io/badge/license-MIT-green)
 ![Static Badge](https://img.shields.io/badge/Python-3.10.6-blue)
 ![Static Badge](https://img.shields.io/badge/requests-2.31.0-red)
