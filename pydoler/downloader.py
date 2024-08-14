@@ -13,7 +13,7 @@ def get_name_type(r: Response):
     else:
         filename_in_url = r.url.split('/')[-1].split('?')[0]
     
-    filename = filename_in_url.split('.')[0]
+    filename = "_".join(filename_in_url.split('.')[:-1])
     filetype_in_url = filename_in_url.split('.')[-1]
 
     filetype = re.search(r'^[a-zA-Z]*?/([^;]+);?(.*?)$', r.headers["Content-Type"]).group(1)
