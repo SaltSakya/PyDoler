@@ -3,6 +3,8 @@ import re
 
 from requests import get, post, Response
 
+from .utils import Log
+
 def get_name_type(r: Response):
     '''
     获取文件名和文件类型
@@ -34,7 +36,7 @@ def download(url:str, path:str, filename:str=None, headers=None, params=None, co
     :return: 文件保存路径
     """
 
-    print(f">>> {url} 开始下载...")
+    Log.print(f">>> {url} 开始下载...")
     
     for i in range(retrys + 1):
         try:
@@ -57,8 +59,8 @@ def download(url:str, path:str, filename:str=None, headers=None, params=None, co
                     f.write(response.content)
             break
         except Exception as e:
-            print(f"下载文件失败，错误信息：{e}, {e.__traceback__}")
+            Log.print(f"下载文件失败，错误信息：{e}, {e.__traceback__}")
     
-    print(f">>> {url} 下载完成！")
+    Log.print(f">>> {url} 下载完成！")
     onfinish()
     return

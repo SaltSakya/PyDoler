@@ -75,7 +75,7 @@ class Agent(ABC):
         如果目录不存在，则递归创建目录。'''
         # 检查目录是否已定义
         if self.dirname == "":
-            print("目录名未定义")
+            Log.print("目录名未定义")
             self.state = AgentState.ERROR
             return
         

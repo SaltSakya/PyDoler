@@ -1,8 +1,32 @@
 import os
-from typing import List, Tuple
+from threading import Thread, Lock
+from typing import List, Tuple, Any
 
 import imageio
 import zipfile
+
+class Log:
+    __thread: Thread = None
+    __lock: Lock = Lock()
+    __queue: List[Tuple[Tuple, dict[str, Any]]] = list()
+
+    @staticmethod
+    def printLog():
+        print("Log thread started...")
+        while Log.__queue:
+            args, kwargs = Log.__queue.pop(0)
+            print(*args, **kwargs)
+        Log.__thread = None
+
+    @staticmethod
+    def print(*args, **kwargs):
+        Log.__queue.append((args, kwargs))
+        Log.__lock.acquire()
+        if Log.__thread is None:
+            Log.__thread = Thread(target=Log.printLog)
+            Log.__thread.start()
+        Log.__lock.release()
+        
 
 def sanitize_dirname(filename:str):
     '''### 目录名消毒
