@@ -12,20 +12,37 @@ class Log:
 
     @staticmethod
     def printLog():
-        print("Log thread started...")
         while Log.__queue:
             args, kwargs = Log.__queue.pop(0)
             print(*args, **kwargs)
         Log.__thread = None
 
     @staticmethod
-    def print(*args, **kwargs):
-        Log.__queue.append((args, kwargs))
+    def flush():
         Log.__lock.acquire()
         if Log.__thread is None:
             Log.__thread = Thread(target=Log.printLog)
             Log.__thread.start()
         Log.__lock.release()
+
+    @staticmethod
+    def Log(*args, **kwargs):
+        Log.__queue.append((args, kwargs))
+        Log.flush()
+
+    @staticmethod
+    def Error(*args, **kwargs):
+        Log.Log(*[f"\033[31m{' '.join(args)}\033[0m"], **kwargs)
+
+    @staticmethod
+    def Warning(*args, **kwargs):
+        Log.Log(*[f"\033[33m{' '.join(args)}\033[0m"], **kwargs)
+
+    @staticmethod
+    def Success(*args, **kwargs):
+        Log.Log(*[f"\033[32m{' '.join(args)}\033[0m"], **kwargs)
+
+    
         
 
 def sanitize_dirname(filename:str):

@@ -36,7 +36,7 @@ def download(url:str, path:str, filename:str=None, headers=None, params=None, co
     :return: 文件保存路径
     """
 
-    Log.print(f">>> {url} 开始下载...")
+    Log.Log(f">>> {url} 开始下载...")
     
     for i in range(retrys + 1):
         try:
@@ -59,8 +59,14 @@ def download(url:str, path:str, filename:str=None, headers=None, params=None, co
                     f.write(response.content)
             break
         except Exception as e:
-            Log.print(f"下载文件失败，错误信息：{e}, {e.__traceback__}")
+            Log.Error((f">>> 下载文件失败\n"
+                       f"\t文件名：{filename}\n"
+                       f"\turl：{url}\n"
+                       f"\t错误信息：{e}, {e.__traceback__}"))
+            
+            onfinish(filename, url, retrys)
+            return
     
-    Log.print(f">>> {url} 下载完成！")
+    Log.Success(f">>> {url} 下载完成！")
     onfinish()
     return

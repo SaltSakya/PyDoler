@@ -75,7 +75,7 @@ class Agent(ABC):
         如果目录不存在，则递归创建目录。'''
         # 检查目录是否已定义
         if self.dirname == "":
-            Log.print("目录名未定义")
+            Log.Error("目录名未定义")
             self.state = AgentState.ERROR
             return
         
@@ -103,9 +103,12 @@ class Agent(ABC):
             if self.cur_threads < self.max_threads and len(self.url_list):
                 # 获取 url
                 self.lock.acquire()
-                filename, url = self.url_list.pop(0)
+                filename, url, *retry = self.url_list.pop(0)
                 self.cur_threads += 1 # 增加当前线程数
                 self.lock.release()
+
+                if len(retry): retry = retry[0]
+                else: retry = 0
 
                 # 下载 url 内容
                 Thread(
@@ -115,6 +118,7 @@ class Agent(ABC):
                         "headers": self.headers,
                         "cookies": self.cookies,
                         "stream": self.stream,
+                        "retrys": retry,
                         "onfinish": self.revert_token
                     }).start()
 
@@ -130,10 +134,21 @@ class Agent(ABC):
         在此处填充 url 列表，并确保在添加 url 时加锁。'''
         pass
 
-    def revert_token(self):
+    def revert_token(self, filename = None, url = None, retryCount = 0):
         '''### 回调函数
         下载结束后的回调操作，减少当前线程数。'''
         self.lock.acquire()
+        if filename:
+            retryCount+=1
+            if retryCount > RETRY_TIMES:
+                Log.Error((">>> 重试次数已达上限，下载失败:\n"
+                           f"\t文件名: {filename}\n"
+                           f"\tURL: {url}"))
+            else:
+                Log.Warning((f">>> 下载失败，即将重试第{retryCount}次...\n"
+                             f"\t文件名: {filename}\n"
+                             f"\tURL: {url}"))
+                self.url_list.append((filename, url, retryCount))
         self.cur_threads -= 1
         self.lock.release()
 
