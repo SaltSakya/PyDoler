@@ -43,6 +43,14 @@ def download(url:str, path:str, filename:str=None, headers=None, params=None, co
             response = get(url, headers=headers, params=params, cookies=cookies, stream=stream)
             response.raise_for_status()
 
+        except Exception as e:
+            Log.Error((f">>> 打开文件链接失败\n"
+                       f"\turl：{url}\n"
+                       f"\t错误信息：{e}, {e.__traceback__}"))
+            onfinish("empty", url, retrys)
+            return
+        
+        try:
             n, t = get_name_type(response)
 
             if filename is None or filename == "":
