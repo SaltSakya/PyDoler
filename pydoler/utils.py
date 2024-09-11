@@ -21,7 +21,7 @@ class Log:
     def flush():
         Log.__lock.acquire()
         if Log.__thread is None:
-            Log.__thread = Thread(target=Log.printLog)
+            Log.__thread = Thread(target=Log.printLog, daemon=False)
             Log.__thread.start()
         Log.__lock.release()
 
