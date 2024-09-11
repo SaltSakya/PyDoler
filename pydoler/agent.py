@@ -113,8 +113,9 @@ class Agent(ABC):
                 # 下载 url 内容
                 Thread(
                     target=download,
-                    args=(url, os.path.join(self.download_dir, self.dirname), filename),
+                    args=(url, os.path.join(self.download_dir, self.dirname)),
                     kwargs={
+                        "filename": filename,
                         "headers": self.headers,
                         "cookies": self.cookies,
                         "stream": self.stream,
