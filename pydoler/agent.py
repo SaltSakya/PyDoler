@@ -58,6 +58,7 @@ class Agent(ABC):
         t.start()
         self.fill_list()
         self.state = AgentState.FILLED
+        t.join()
 
     def url_preprocess(self):
         '''### url 预处理
@@ -135,11 +136,11 @@ class Agent(ABC):
         在此处填充 url 列表，并确保在添加 url 时加锁。'''
         pass
 
-    def revert_token(self, filename = None, url = None, retryCount = 0):
+    def revert_token(self, retry:bool = False, filename:str = None, url:str = None, retryCount:int = 0):
         '''### 回调函数
         下载结束后的回调操作，减少当前线程数。'''
         self.lock.acquire()
-        if filename:
+        if retry:
             retryCount+=1
             if retryCount > RETRY_TIMES:
                 Log.Error((">>> 重试次数已达上限，下载失败:\n"

@@ -47,7 +47,7 @@ def download(url:str, path:str, filename:str=None, headers=None, params=None, co
             Log.Error((f">>> 打开文件链接失败\n"
                        f"\turl：{url}\n"
                        f"\t错误信息：{e}, {e.__traceback__}"))
-            onfinish("empty", url, retrys)
+            onfinish(True, filename, url, retrys)
             return
         
         try:
@@ -72,7 +72,7 @@ def download(url:str, path:str, filename:str=None, headers=None, params=None, co
                        f"\turl：{url}\n"
                        f"\t错误信息：{e}, {e.__traceback__}"))
             
-            onfinish(filename, url, retrys)
+            onfinish(True, filename, url, retrys)
             return
     
     Log.Success(f">>> {url} 下载完成！")
